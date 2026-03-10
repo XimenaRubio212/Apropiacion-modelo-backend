@@ -1,30 +1,38 @@
-// import express from 'express';
-// const router = express.Router();
-// import {crearPQRS, eliminarPQRS} from '../controllers/pqrsController.js';
-
-// router.post('/pqrs', crearPQRS);
-
-// router.delete('/pqrs/:id', eliminarPQRS);
-
-// router.get('/pqrs', (req, res) => {
-//     res.json({
-//         mensaje: "Bienvenido a la API de PQRS",
-//         estado: "Servidor funcionando correctamente",
-//         puntos_de_enlace: ["/registrar (POST)", "/eliminar/:id (DELETE)"]
-//     });
-// });
-
-// export default router;
-
+/**
+ * ENRUTADOR DE PQRS
+ * Este archivo define los "puntos de enlace" (endpoints) de la API y los 
+ * vincula con las funciones lógicas del controlador.
+ */
 import express from 'express';
-const router = express.Router();
-import { obtenerTodosPQRS, obtenerPQRSporId, crearPQRS, eliminarPQRS } from '../controllers/pqrsController.js';
+import { 
+    obtenerTodosPQRS, 
+    obtenerPQRSporId, 
+    crearPQRS, 
+    actualizarPQRS, 
+    eliminarPQRS 
+} from '../controllers/pqrsController.js';
 
-//rutas
-router.get('/', obtenerTodosPQRS);
-router.get('/:id', obtenerPQRSporId);
-router.post('/registrar', crearPQRS);
-router.put('/actualizar/:id', actualizarPQRS);
-router.delete('/eliminar/:id', eliminarPQRS);
+// Inicialización del router de Express
+const pqrsRouter = express.Router();
 
-export default router;
+/**
+ * DEFINICIÓN DE RUTAS (Prefijo configurado en app.js: /api/pqrs)
+ */
+
+// Ruta para obtener el listado completo de PQRS
+pqrsRouter.get('/', obtenerTodosPQRS);
+
+// Ruta para obtener una PQRS específica mediante su ID
+pqrsRouter.get('/:id', obtenerPQRSporId);
+
+// Ruta para crear un nuevo registro de PQRS
+pqrsRouter.post('/', crearPQRS);
+
+// Ruta para modificar una PQRS existente según su ID
+pqrsRouter.put('/:id', actualizarPQRS);
+
+// Ruta para eliminar una PQRS del sistema según su ID
+pqrsRouter.delete('/:id', eliminarPQRS);
+
+// Exportación por defecto para ser importado en app.js
+export default pqrsRouter;

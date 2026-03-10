@@ -1,17 +1,8 @@
-// import {registrarSimulado, eliminarSimulado} from '../models/pqrsModel.js';
-
-// export const crearPQRS = (req, res) => {
-//     const { titulo, descripcion } = req.body;
-//     const respuesta = registrarSimulado(titulo, descripcion);
-//     res.status(201).json(respuesta);
-// };
-
-// export const eliminarPQRS = (req, res) => {
-//     const { id } = req.params;
-//     const respuesta = eliminarSimulado(id);
-//     res.status(200).json(respuesta);
-// };
-
+/**
+ * CONTROLADOR DE PQRS
+ * Este archivo actúa como intermediario entre las rutas y el modelo.
+ * Se encarga de recibir las peticiones HTTP (req) y enviar las respuestas (res).
+ */
 import {
     registrarSimulado,
     eliminarSimulado,
@@ -20,38 +11,80 @@ import {
     actualizarSimulado
 } from '../models/pqrsModel.js';
 
-//logica para consultar todo (GET)
-export const obtenerTodosPQRS = (req, res) => {
-    const respuesta = obtenerTodosSimulado();
-    res.status(200).json(respuesta);
+// Lógica para consultar todos los registros (GET)
+const obtenerTodosPQRS = (req, res) => {
+    const pqrs = obtenerTodosSimulado();
+    res
+        .status(200)
+        .json({
+            msn: "lista de PQRS",
+            data: pqrs
+        });
 };
 
-//logica para consultar por ID (GET)
-
-export const obtenerPQRSporId = (req, res) => {
+// Lógica para consultar un registro específico por su ID (GET)
+const obtenerPQRSporId = (req, res) => {
     const { id } = req.params;
-    const respuesta = obtenerPorIdSimulado(id);
-    res.status(200).json(respuesta);
+    const pqrs = obtenerPorIdSimulado(id);
+    res
+        .status(200)
+        .json({
+            msn: `PQRS con id: ${id} consultada correctamente`,
+            data: pqrs
+        });
 };
 
-//logica para crear (POST)
-export const crearPQRS = (req, res) => {
+// Lógica para crear un nuevo registro (POST)
+const crearPQRS = (req, res) => {
     const { titulo, descripcion } = req.body;
-    const respuesta = registrarSimulado(titulo, descripcion);
-    res.status(201).json(respuesta);
+    const pqrs = registrarSimulado(titulo, descripcion);
+    res
+        .status(201)
+        .json({
+            msn: "PQRS creada correctamente",
+            data: pqrs
+        });
 };
 
-//logica para actualizar (PUT)
-export const actualizarPQRS = (req, res) => {
+// Lógica para modificar un registro existente (PUT)
+const actualizarPQRS = (req, res) => {
     const { id } = req.params;
-    const datosNuevos = req.body;
-    const respuesta = actualizarSimulado(id, datosNuevos);
-    res.status(200).json(respuesta);
+    const { titulo, descripcion } = req.body; 
+    
+    // Enviamos los parámetros individualmente para coincidir con la firma del modelo
+    const pqrs = actualizarSimulado(id, titulo, descripcion);
+    
+    res
+        .status(200)
+        .json({
+            msn: `PQRS con id: ${id} modificada correctamente`,
+            data: pqrs
+        });
 };
 
-//logica para eliminar (DELETE)
-export const eliminarPQRS = (req, res) => {
+// Lógica para eliminar un registro del sistema (DELETE)
+const eliminarPQRS = (req, res) => {
     const { id } = req.params;
-    const respuesta = eliminarSimulado(id);
-    res.status(200).json(respuesta);
+    const resultado = eliminarSimulado(id);
+    
+    // Verificamos si la operación en el modelo fue exitosa
+    if (resultado) {
+        res
+            .status(200)
+            .json({
+                msn: `PQRS con id: ${id} eliminada correctamente`,
+                data: [{
+                    id: id
+                }]
+            });
+    }
+};
+
+// Exportación unificada para mantener el estándar de la arquitectura
+export {
+    obtenerTodosPQRS,
+    obtenerPQRSporId,
+    crearPQRS,
+    actualizarPQRS,
+    eliminarPQRS
 };
